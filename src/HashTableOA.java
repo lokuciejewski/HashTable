@@ -45,12 +45,20 @@ public class HashTableOA<K, V> implements Map<K,V> {
     private int search(K key){
         int hashKey = hash(key);
         int j = -number_of_keys;
-        for(int i = hashKey; ; i++){
+        for(int i = hashKey; i<table.length ; i++){
             if(table[(i+j*j)%table.length]!=null && table[(i+j*j)%table.length].getKey() == key){
-                return i;
+                return (i+j*j)%table.length;
             }
             j++;
         }
+        j = -number_of_keys;
+        for(int i = 0; i<hashKey; i++){
+            if(table[(i+j*j)%table.length]!=null && table[(i+j*j)%table.length].getKey() == key){
+                return (i+j*j)%table.length;
+            }
+            j++;
+        }
+        return -1;
     }
 
 
@@ -104,7 +112,7 @@ public class HashTableOA<K, V> implements Map<K,V> {
 
     public boolean containsValue(Object value) {
         for(int i = 0; i<table.length; i++){
-            if(table[i]!=null & table[i].getValue()==value){
+            if(table[i]!=null && table[i].getValue()==value){
                 return true;
             }
         }
