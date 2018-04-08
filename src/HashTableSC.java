@@ -4,11 +4,20 @@ public class HashTableSC<K, V> implements Map<K, V>{
 
     private LinkedList<Element<K, V>>[] table;
     private int size;
-    int numberOfKeys;
+    int number_of_keys; //should be reasonably low
+
+    public HashTableSC(){
+        this.size = 0;
+        this.number_of_keys = 30;
+        table = new LinkedList[number_of_keys];
+        for(int i = 0; i<number_of_keys; i++){
+            table[i] = new LinkedList<>();
+        }
+    }
 
     public HashTableSC(int numberOfKeys){
         this.size = 0;
-        this.numberOfKeys = numberOfKeys;
+        this.number_of_keys = numberOfKeys;
         table = new LinkedList[numberOfKeys];
         for(int i = 0; i<numberOfKeys; i++){
             table[i] = new LinkedList<>();
@@ -47,11 +56,11 @@ public class HashTableSC<K, V> implements Map<K, V>{
 
     private int hash(Element el){
         String key = el.getKey().toString();
-        return key.hashCode()%numberOfKeys;
+        return Math.abs(key.hashCode()%number_of_keys);
     }
     private int hash(K key){
         String keystr = key.toString();
-        return keystr.hashCode()%numberOfKeys;
+        return Math.abs(keystr.hashCode()%number_of_keys);
     }
 
 
@@ -102,16 +111,15 @@ public class HashTableSC<K, V> implements Map<K, V>{
     public V remove(Object key) {
         LinkedList<Element<K, V>> list = table[hash((K)key)];
         Element<K, V> el = null;
-        while(list.iterator().hasNext()){
-            el = list.iterator().next();
-            if(el.getKey() == key){
-                list.iterator().remove();
+        for(int i = 0; i < list.size(); i++){
+            if(list.get(i).getKey() == key){
+                el = list.get(i);
+                list.remove(i);
             }
         }
         return (V)el.getValue();
     }
 
-    @Override
     public void putAll(Map<? extends K, ? extends V> m) {
 
     }
@@ -120,6 +128,7 @@ public class HashTableSC<K, V> implements Map<K, V>{
         for(int i = 0; i<table.length; i++){
             table[i] = new LinkedList<>();
         }
+        System.gc();
     }
 
     public Set keySet() {
